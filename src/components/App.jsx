@@ -4,11 +4,26 @@ import Form from 'components/form/Form';
 import { Filter } from 'components/filter/Filter';
 import styled from 'styled-components';
 
+const CONTACTS_KEY = 'contacts';
 export class App extends Component {
   state = {
     contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem(CONTACTS_KEY);
+    if (contacts && JSON.parse(contacts).length) {
+      this.setState({
+        contacts: JSON.parse(contacts),
+      });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem(CONTACTS_KEY, JSON.stringify(this.state.contacts));
+    }
+  }
 
   handleSubmit = contact => {
     this.setState(prevState => ({
